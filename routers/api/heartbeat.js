@@ -26,13 +26,11 @@ module.exports = function (router) {
 
     router.get('/t2', async(ctx)=>{
         let v1 = fs.readFileSync('./data/v001.txt');
-        console.log('t1' ,v1.toString());
+        let v2 = fs.readFileSync('./data/v002.txt');
 
-        let lines = v1.toString().split('\n');
+        let lines1 = v1.toString().split('\n');
+        let lines2 = v2.toString().split('\n');
 
-        console.log('lines', lines);
-
-
-       await ctx.render('index',{lines:lines, content:v1.toString()});
+       await ctx.render('index',{lines1, lines2});
     });
 };

@@ -33,22 +33,47 @@
         }
     </style>
 
+
 </head>
 <body>
 
 <div class="root">
-    <div style="background: red;width:100%;flex-grow:1;overflow: auto">
+    <div style="background: red;width:100px;flex-grow:1;overflow: auto">
         <div>
-            <% for(var i=0;i<lines.length;i++){ %>
-            <pre><%=i%> &nbsp; <%=lines[i]%></pre>
+            <% for(var i=0;i<lines1.length;i++){ %>
+            <pre><%=lines1[i]%></pre>
             <div class="split"></div>
             <%}%>
         </div>
     </div>
-    <div style="background: blue;width:80px"></div>
-    <div style="background: green;width:100%;flex-grow:1"></div>
+    <div style="background: blue;width:80px;flex-shrink:0">
+        <canvas id="canvas" width="80" height="250" style="width:80px;height:250px;background: yellow"></canvas>
+    </div>
+    <div style="background: green;width:100px;flex-grow:1;overflow: auto">
+        <div>
+            <% for(var i=0;i<lines2.length;i++){ %>
+            <pre><%=lines2[i]%></pre>
+            <div class="split"></div>
+            <%}%>
+        </div>
+    </div>
 </div>
+<script>
+    var canvas=document.getElementById("canvas");
+    var context=canvas.getContext("2d");
+    //context.lineWidth = 1;
+    lineTo(context, 1, 4);
 
+    function lineTo(context, left, righit){
+        var fromY = left * 24 + 1;
+        var toY = righit * 24 + 1;
+
+        console.log('aaa', fromY, toY);
+        context.moveTo(0, fromY);
+        context.lineTo(80, toY);
+        context.stroke();
+    }
+</script>
 
 </body>
 </html>
