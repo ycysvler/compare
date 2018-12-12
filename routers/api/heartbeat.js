@@ -28,6 +28,9 @@ module.exports = function (router) {
         let v1 = fs.readFileSync('./data/v001.txt');
         let v2 = fs.readFileSync('./data/v002.txt');
 
+        let r = await tools.git('diff ./data/v001.txt ./data/v002.txt');
+        console.log('git' ,r);
+
         let lines1 = v1.toString().split('\n');
         let lines2 = v2.toString().split('\n');
 
