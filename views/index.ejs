@@ -62,11 +62,11 @@
     var canvas=document.getElementById("canvas");
     var context=canvas.getContext("2d");
     //context.lineWidth = 1;
-    lineTo(context, 1, 4);
+    lineTo(context, 6, 4);
 
     function lineTo(context, left, righit){
-        var fromY = left * 24 + 1;
-        var toY = righit * 24 + 1;
+        var fromY = left * 25;
+        var toY = righit * 25;
 
         console.log('aaa', fromY, toY);
         context.moveTo(0, fromY);
