@@ -126,4 +126,63 @@ module.exports = function (router) {
         return {begin:parseInt(nums[0]) , end: parseInt(nums[1]) };
     }
 
+    router.get('/t3', async (ctx) => {
+        let file1 = path.join(__dirname, "../../data/v001.txt");
+        let file2 = path.join(__dirname, "../../data/v002.txt");
+
+        let r = await tools.diff(`diff ${file1} ${file2}`);
+
+        let diffs = r.split('\n');
+
+        let groups = getGroups(diffs);
+
+        for(let group of groups){
+            let t = getLeftRightRelation(group);
+            console.log('t', t);
+        }
+        
+        console.log('groups', groups);    
+    });
+
+    function getGroups(rows){  
+        let groups = [], group = {head:'', rows:[]};  
+        for(let row of rows){
+            if(row[0] === '<' || row[0] === '>' || row[0] === '-'){
+                group.rows.push(row);
+            }else if(row){
+                // new group
+                group = { rows:[], head:splitLeftRight(row)}; 
+                groups.push(group);
+            } 
+        }
+        return groups;
+    }
+
+    function getLeftRightRelation(group){
+        let leftRows=[],rightRows=[],relations=[];
+        for(let row of group.rows){
+            if(row[0] === '<'){
+                leftRows.push({row:group.head.leftBegin,content: row});
+                group.head.leftBegin++;
+            }
+            if(row[0] === '>'){
+                rightRows.push({row:group.head.rightBegin,content: row});
+                group.head.rightBegin++;
+            }
+        }
+        return {leftRows,rightRows,relations};
+    }
+
+    function splitLeftRight(head){
+        let temps = [];
+        if(head.indexOf('a')>-1) temps = head.split('a');
+        if(head.indexOf('c')>-1) temps = head.split('c');
+        if(head.indexOf('d')>-1) temps = head.split('d');
+        return {'leftBegin':getBeginRow(temps[0]), 'rightBegin':getBeginRow(temps[1]), content:head}; 
+    }
+    function getBeginRow(str){
+        let temps = str.split(',');
+        return parseInt(temps[0]);
+    }
+
 };
