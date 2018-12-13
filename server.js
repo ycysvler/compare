@@ -47,5 +47,8 @@ log.info({                                                  // 记录系统启�
     port: config.server.face.port
 }, 'face v1.0 app services is starting at port ' + config.server.face.port);
 
+String.prototype.replaceAll = function(s1,s2){
+    return this.replace(new RegExp(s1,"gm"),s2);
+};
 
 module.exports = app;

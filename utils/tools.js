@@ -11,6 +11,7 @@ const os = require('os');
 const exec = require('child_process').exec;
 
 class tools {
+
     /*
     * 获取本机IP地址
     * */
@@ -84,18 +85,10 @@ class tools {
         });
     }
 
-    git(command){
-        console.log('>', command);
-
+    diff(command){
         return new Promise((resolve, reject) => {
             exec(command,{maxBuffer:1024000000}, function (err, stdout, stderr) {
-                if (err) {
-                    console.log('err' ,err);
-                    reject(stderr);
-                }
-                else {
-                    resolve(stdout);
-                }
+                resolve(stdout);
             });
         });
     }
