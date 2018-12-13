@@ -85,9 +85,12 @@ class tools {
     }
 
     git(command){
+        console.log('>', command);
+
         return new Promise((resolve, reject) => {
-            exec(command, function (err, stdout, stderr) {
+            exec(command,{maxBuffer:1024000000}, function (err, stdout, stderr) {
                 if (err) {
+                    console.log('err' ,err);
                     reject(stderr);
                 }
                 else {

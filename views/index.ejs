@@ -38,7 +38,7 @@
 <body>
 
 <div class="root">
-    <div style="background: red;width:100px;flex-grow:1;overflow: auto">
+    <div style="background: white;width:100px;flex-grow:1;overflow: auto">
         <div>
             <% for(var i=0;i<lines1.length;i++){ %>
             <pre><%=lines1[i]%></pre>
@@ -46,10 +46,10 @@
             <%}%>
         </div>
     </div>
-    <div style="background: blue;width:80px;flex-shrink:0">
+    <div style="background: white;width:80px;flex-shrink:0">
         <canvas id="canvas" width="80" height="<%= lines2.length * 25%>" style="width:80px;height:<%= lines2.length * 25%>px;background: white"></canvas>
     </div>
-    <div style="background: green;width:100px;flex-grow:1;overflow: auto">
+    <div style="background: white;width:100px;flex-grow:1;overflow: auto">
         <div>
             <% for(var i=0;i<lines2.length;i++){ %>
             <pre><%=lines2[i]%></pre>
@@ -65,7 +65,7 @@
     //lineTo(context, 6, 4);
     //lineTo(context, 6, 7);
 
-    draw(context, 'rgba(0,0,255,1)', 3,3,5,7);
+    draw(context, 'rgba(250,250,250,1)', 3,3,5,7);
     
     function draw(ctx, color, line1, line2, line3, line4){
         var width = 80;
