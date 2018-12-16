@@ -1,8 +1,59 @@
 const fs = require("fs");
 const path = require("path");
 const tools = require('../../utils/tools');
+const uploadFile = require('../../utils/upload');
 
 module.exports = function (router) {
+
+    router.get('/index',async(ctx)=>{
+        await ctx.render('index');
+    });
+
+    router.post('/upload', async(ctx)=>{
+        let serverFilePath = path.join(__dirname, '../../public');
+
+        // 上传文件事件
+        let f = await uploadFile(ctx, {
+            fileType: 'file',          // 上传之后的目录
+            path: serverFilePath
+        });
+
+        // let file1 = f.files[0];
+        // let file2 = f.files[1];
+        console.log('file1', f.files[0]);
+        console.log('file2', f.files[1]);
+
+        console.log(f);
+
+        let file1 = path.join(__dirname, "../../data/v001.txt");
+        let file2 = path.join(__dirname, "../../data/v002.txt");
+
+        file1 = f.files[0];
+        file2 = f.files[1];
+
+        fs.exists(file1, (exists)=>{
+            console.log('exists', exists);
+        });
+
+        console.log('leftRows',  fs.readFileSync(file1));
+
+        let leftRows = fs.readFileSync(file1).toString().split('\n');
+        let rightRows = fs.readFileSync(file2).toString().split('\n');
+
+
+
+
+        let r = await tools.diff(`diff ${file1} ${file2}`);
+
+        let diffs = r.split('\n');
+
+        let diffrows = getLeftRightDiffRows(diffs);
+
+        leftRows = adapter(leftRows, diffrows.leftRows);
+        rightRows = adapter(rightRows, diffrows.rightRows);
+
+        await ctx.render('compare', {left: leftRows, right: rightRows, groups: JSON.stringify(diffrows.relations)});
+    });
 
     router.get('/c', async (ctx) => {
         let file1 = path.join(__dirname, "../../data/v001.txt");
@@ -104,8 +155,6 @@ module.exports = function (router) {
                 group.head.rightBegin++;
             }
         }
-
-
 
         if (group.head.type === 'a') {
             leftRows.push({row: group.head.leftBegin, content: '', type: 'a'});

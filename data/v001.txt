@@ -1,115 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>title</title>
-    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
-    <style>
-        .label {
-            width: 100px;
-            text-align: right;
-            padding: 4px;
-            display: inline-block;
+const inspect = require('util').inspect;
+const path = require('path');
+const fs = require('fs');
+const os = require('os');
+const Busboy = require('busboy');
+
+/**
+ * 同步创建文件目录
+ * @param  {string} dirname 目录绝对地址
+ * @return {boolean}        创建目录结果
+ */
+function mkdirsSync(dirname) {
+    if (fs.existsSync(dirname)) {
+        return true;
+    } else {
+        if (mkdirsSync(path.dirname(dirname))) {
+            fs.mkdirSync(dirname);
+            return true;
         }
-
-        pre{
-            height:24px;
-            line-height: 24px;
-            margin:0;
-            padding:0 8px;
-        }
-        .split{
-            height: 1px;
-            background: transparent;
-        }
-
-        .root{
-
-            display: flex;
-            flex-direction:row;
-        }
-        .root div{
-
-        }
-
-        .bg-blue{
-            background: rgba(240,240,240,0.8);
-        }
-    </style>
-
-
-</head>
-<body>
-
-<div class="root">
-    <div style="background: white;width:100px;flex-grow:1;overflow: auto;border-right: 1px solid #eee">
-        <div>
-            <% for(var i=0;i<left.length;i++){ %>
-            <pre class="<%if(left[i].type=='c' || left[i].type=='d' ){%>bg-blue<%}%>"><%=left[i].content%></pre>
-            <div class="split <%if(left[i].type=='a'){%>bg-blue<%}%>"></div>
-            <%}%>
-        </div>
-    </div>
-    <div style="background: white;width:80px;flex-shrink:0">
-        <canvas id="canvas" width="80" height="<%= right.length * 25%>"
-                style="width:80px;height:<%= right.length * 25%>px;background: white"></canvas>
-    </div>
-    <div style="background: white;width:100px;flex-grow:1;overflow: auto;border-left: 1px solid #eee;">
-        <div>
-            <% for(var i=0;i<right.length;i++){ %>
-            <pre class="<%if(right[i].type=='c' || right[i].type=='a'){%>bg-blue<%}%>"><%=right[i].content%></pre>
-            <div class="split <%if(right[i].type=='d'){%>bg-blue<%}%>"></div>
-            <%}%>
-        </div>
-    </div>
-</div>
-<script>
-    var canvas=document.getElementById("canvas");
-    var context=canvas.getContext("2d");
-    //context.lineWidth = 1;
-    //lineTo(context, 6, 4);
-    //lineTo(context, 6, 7);
-
-    var groups = <%-groups%>;
-
-    for(var i=0;i<groups.length;i++){
-        var group = groups[i];
-        draw(context, 'rgba(240,240,240,0.8)', group.p1,group.p2,group.p3,group.p4);
     }
+}
+
+/**
+ * 获取上传文件的后缀名
+ * @param  {string} fileName 获取上传文件的后缀名
+ * @return {string}          文件后缀名
+ */
+function getSuffixName(fileName) {
+    let nameList = fileName.split('.');
+    return nameList[nameList.length - 1];
+}
+
+/**
+ * 上传文件
+ * @param  {object} ctx     koa上下文
+ * @param  {object} options 文件上传参数 fileType文件类型， path文件存放路径
+ * @return {promise}
+ */
+function uploadFile(ctx, options) {
+    let req = ctx.req;
+    let res = ctx.res;
+    let busboy = new Busboy({headers: req.headers});
+
+    // 获取类型
+    let fileType = options.fileType || 'common';
+    let filePath = path.join(options.path, fileType);
+    let mkdirResult = mkdirsSync(filePath);
+
+    return new Promise((resolve, reject) => {
+        console.log('文件上传中...');
+
+        let result = {
+            files:[],
+            success: false,
+            formData: {},
+        };
+
+        // 解析请求文件事件
+        busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
+            let fileName = Math.random().toString(16).substr(2) + '.' + getSuffixName(filename);
+            let _uploadFilePath = path.join(filePath, fileName);
+            let saveTo = path.join(_uploadFilePath);
+
+            // 文件保存到制定路径
+            file.pipe(fs.createWriteStream(saveTo));
 
 
-    function draw(ctx, color, line1, line2, line3, line4){
-        var width = 80;
-        var x1 = 0, y1 = (line1) * 25;
-        var x2 = width, y2 = (line2) * 25;
-        var x3 = width, y3 = line3 * 25;
+            //监听data事件，接收传过来的文件，如果文件过大，此事件将会执行多次，此方法必须写在file方法里
+            file.on('data', function (data) {
+                console.log('data', data);
+            });
 
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.lineTo(x3, y3);
+            // 文件写入事件结束
+            file.on('end', function () {
 
-        if(line4){
-            ctx.lineTo(0, line4 * 25);
-        }
+                result.success = true;
+                result.message = '文件上传成功';
+                //result.path = _uploadFilePath;
+                result.files.push(_uploadFilePath);
 
-        ctx['fillStyle'] = color;
-        ctx.closePath();
-        ctx['fill']();
-    }
+                console.log('????', fs.readFileSync(_uploadFilePath).toString());
 
+                console.log('文件上传成功！');
+            });
 
+        });
 
-    function lineTo(context, left, righit){
-        var fromY = left * 25;
-        var toY = righit * 25;
+        // 解析表单中其他字段信息
+        busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+            console.log('表单字段数据 [' + fieldname + ']: value: ' + inspect(val));
+            result.formData[fieldname] = inspect(val);
+        });
 
-        console.log('aaa', fromY, toY);
-        context.moveTo(0, fromY);
-        context.lineTo(80, toY);
-        context.stroke();
-    }
-</script>
+        // 解析结束事件
+        busboy.on('finish', function () {
+            console.log('文件上结束');
+            //resolve(result);
+            setTimeout(()=>{resolve(result);}, 10);
 
-</body>
-</html>
+        });
+
+        // 解析错误事件
+        busboy.on('error', function (err) {
+            console.log('文件上出错');
+            reject(result);
+        });
+
+        //将流链接到busboy对象
+        req.pipe(busboy);
+    })
+}
+
+module.exports = uploadFile;

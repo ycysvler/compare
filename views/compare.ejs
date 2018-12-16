@@ -33,7 +33,25 @@
         }
 
         .bg-blue{
-            background: rgba(240,240,240,0.8);
+            background: rgba(240,240,240,0.7);
+        }
+
+        .line-no{
+            width:30px;
+	    text-align:right;
+            background: rgba(200,200,200,0.8);
+            display:inline-block;
+	}
+
+        .box{
+            display:flex;
+            flex-direction: row;
+        }
+        .layout{
+            background: white;width:100px;flex-grow:1;overflow: auto;border-right: 1px solid #eee;border-left: 1px solid #eee;
+        }
+	.canvas-inner{
+	    background: white;width:80px;flex-shrink:0;
         }
     </style>
 
@@ -42,19 +60,19 @@
 <body>
 
 <div class="root">
-    <div style="background: white;width:100px;flex-grow:1;overflow: auto;border-right: 1px solid #eee">
+    <div class='layout'>
         <div>
             <% for(var i=0;i<left.length;i++){ %>
-            <pre class="<%if(left[i].type=='c' || left[i].type=='d' ){%>bg-blue<%}%>"><%=left[i].content%></pre>
+            <div class="box <%if(left[i].type=='c' || left[i].type=='d' ){%>bg-blue<%}%>"><pre class='line-no' style='flex-shrink:0'><%=i+1%></pre><pre style='flex-grow:1'><%=left[i].content%></pre></div>
             <div class="split <%if(left[i].type=='a'){%>bg-blue<%}%>"></div>
             <%}%>
         </div>
     </div>
-    <div style="background: white;width:80px;flex-shrink:0">
+    <div class='canvas-inner'>
         <canvas id="canvas" width="80" height="<%= right.length * 25%>"
                 style="width:80px;height:<%= right.length * 25%>px;background: white"></canvas>
     </div>
-    <div style="background: white;width:100px;flex-grow:1;overflow: auto;border-left: 1px solid #eee;">
+    <div class='layout'>
         <div>
             <% for(var i=0;i<right.length;i++){ %>
             <pre class="<%if(right[i].type=='c' || right[i].type=='a'){%>bg-blue<%}%>"><%=right[i].content%></pre>
@@ -74,7 +92,7 @@
 
     for(var i=0;i<groups.length;i++){
         var group = groups[i];
-        draw(context, 'rgba(240,240,240,0.8)', group.p1,group.p2,group.p3,group.p4);
+        draw(context, 'rgba(240,240,240,0.7)', group.p1,group.p2,group.p3,group.p4);
     }
 
     

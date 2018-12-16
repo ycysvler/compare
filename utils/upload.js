@@ -48,7 +48,9 @@ function uploadFile(ctx, options) {
 
     return new Promise((resolve, reject) => {
         console.log('文件上传中...');
+
         let result = {
+            files:[],
             success: false,
             formData: {},
         };
@@ -62,16 +64,26 @@ function uploadFile(ctx, options) {
             // 文件保存到制定路径
             file.pipe(fs.createWriteStream(saveTo));
 
+
+            //监听data事件，接收传过来的文件，如果文件过大，此事件将会执行多次，此方法必须写在file方法里
+            file.on('data', function (data) {
+                console.log('data', data);
+            });
+
             // 文件写入事件结束
             file.on('end', function () {
+
                 result.success = true;
                 result.message = '文件上传成功';
-                result.path = _uploadFilePath;
+                //result.path = _uploadFilePath;
+                result.files.push(_uploadFilePath);
+
+                console.log('????', fs.readFileSync(_uploadFilePath).toString());
 
                 console.log('文件上传成功！');
-                resolve(result);
-            })
-        })
+            });
+
+        });
 
         // 解析表单中其他字段信息
         busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
@@ -82,8 +94,10 @@ function uploadFile(ctx, options) {
         // 解析结束事件
         busboy.on('finish', function () {
             console.log('文件上结束');
-            resolve(result);
-        })
+            //resolve(result);
+            setTimeout(()=>{resolve(result);}, 10);
+
+        });
 
         // 解析错误事件
         busboy.on('error', function (err) {
@@ -91,6 +105,7 @@ function uploadFile(ctx, options) {
             reject(result);
         });
 
+        //将流链接到busboy对象
         req.pipe(busboy);
     })
 }
