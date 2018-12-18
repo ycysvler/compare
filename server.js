@@ -18,14 +18,8 @@ const loader = require('./utils/loader');                   // 路由加载器
 const app = new Koa();                                      // 创建koa实例化
 const log = logger('api');                                  // 日志
 
-// app.use(async (ctx, next) => {                           // 打一条屏显，活跃下气氛
-//     console.log(`${moment().format()} ${ctx.request.method} ${ctx.request.url}`);
-//     await next();
-// });
-
 app.on('error', (err, ctx) => {                             // 全局错误处理
     console.log(err);
-    //log.error({title: err.toString(), stack: err.stack}, 'server error');
 });
 app.use(views(path.join(__dirname,'./views'),{
     extension:'ejs'
@@ -39,13 +33,13 @@ app.use(consuming);                                         // 计算耗时中�
 const root = loader(path.join(__dirname, './routers/api'), '/api');
 app.use(root.routes()).use(root.allowedMethods());          // 加载路由
 
-app.listen(config.server.face.port);                        // 启动http服务
+app.listen(config.server.port);                             // 启动http服务
 
 log.info({                                                  // 记录系统启动日志
     path: '~',
     type: 'start',
-    port: config.server.face.port
-}, 'face v1.0 app services is starting at port ' + config.server.face.port);
+    port: config.server.port
+}, 'face v1.0 app services is starting at port ' + config.server.port);
 
 String.prototype.replaceAll = function(s1,s2){
     return this.replace(new RegExp(s1,"gm"),s2);
