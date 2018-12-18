@@ -3,18 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>title</title>
-    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
 
+    <script>
+        function onSubmit() {
+            var file1 = document.getElementById('file1');
 
+            var file2 = document.getElementById('file2');
+  
+            if (!file1.value && !file2.value) {
+                alert('请选择 [文件1] 和 [文件2] ');
+            }else if(!file1.value){
+                alert('请选择 [文件1] ');
+            }else if(!file2.value){
+                alert('请选择 [文件2] ');
+            }else{
+                return true;
+            }
+
+            return false;
+        }
+    </script>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #eee;
+        }
+
+        td{
+            padding:8px;
+        }
+    </style>
 </head>
 <body>
 
 <div class="root">
-<form action="/api/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="file1" id="file1" value="" multiple="multiple" />
-    <input type="file" name="file2" id="file2" value="" multiple="multiple" />
-    <input type="submit" value="提交"/>
-</form>
+    <form action="/api/upload" onsubmit="return onSubmit()" method="post" enctype="multipart/form-data">
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="2">请选择两个比对文件，上传比较</td>
+            </tr>
+            <tr>
+                <td>文件1</td>
+                <td><input type="file" name="file1" id="file1" value="" multiple="multiple"/></td>
+            </tr>
+            <tr>
+                <td>文件2</td>
+                <td><input type="file" name="file2" id="file2" value="" multiple="multiple"/></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="上传" style="width:80px;"/></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </form>
 </div>
 
 

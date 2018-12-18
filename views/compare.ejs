@@ -69,8 +69,8 @@
         </div>
     </div>
     <div class='canvas-inner'>
-        <canvas id="canvas" width="80" height="<%= right.length * 25%>"
-                style="width:80px;height:<%= right.length * 25%>px;background: white"></canvas>
+        <canvas id="canvas" width="80" height="<%= (right.length > left.length ? right.length : left.length) * 25%>"
+                style="width:80px;height:<%= (right.length > left.length ? right.length : left.length) * 25%>px;background: white"></canvas>
     </div>
     <div class='layout'>
         <div>
