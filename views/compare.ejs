@@ -12,46 +12,57 @@
             display: inline-block;
         }
 
-        pre{
-            height:24px;
+        pre {
+            height: 24px;
             line-height: 24px;
-            margin:0;
-            padding:0 8px;
+            margin: 0;
+            padding: 0 8px;
         }
-        .split{
+
+        .split {
             height: 1px;
             background: transparent;
         }
 
-        .root{
+        .root {
 
             display: flex;
-            flex-direction:row;
-        }
-        .root div{
-
-        }
-
-        .bg-blue{
-            background: rgba(240,240,240,0.7);
-        }
-
-        .line-no{
-            width:30px;
-	    text-align:right;
-            background: rgba(200,200,200,0.8);
-            display:inline-block;
-	}
-
-        .box{
-            display:flex;
             flex-direction: row;
         }
-        .layout{
-            background: white;width:100px;flex-grow:1;overflow: auto;border-right: 1px solid #eee;border-left: 1px solid #eee;
+
+        .root div {
+
         }
-	.canvas-inner{
-	    background: white;width:80px;flex-shrink:0;
+
+        .bg-blue {
+            background: #BBDCFF; /*rgba(240,240,240,0.7); #CFFF9E */
+        }
+
+        .line-no {
+            width: 30px;
+            text-align: right;
+            background: rgba(200, 200, 200, 0.8);
+            display: inline-block;
+        }
+
+        .box {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .layout {
+            background: white;
+            width: 100px;
+            flex-grow: 1;
+            overflow: auto;
+            border: 1px solid #eee;
+        }
+
+        .canvas-inner {
+            padding-top: 25px;
+            background: white;
+            width: 80px;
+            flex-shrink: 0;
         }
     </style>
 
@@ -61,53 +72,63 @@
 
 <div class="root">
     <div class='layout'>
+        <div style="border-bottom: 1px solid #eee; background:#CFFF9E;">
+            <pre>文件1 > <%=statistics.left%></pre>
+        </div>
         <div>
-            <% for(var i=0;i<left.length;i++){ %>
-            <div class="box <%if(left[i].type=='c' || left[i].type=='d' ){%>bg-blue<%}%>"><pre class='line-no' style='flex-shrink:0'><%=i+1%></pre><pre style='flex-grow:1'><%=left[i].content%></pre></div>
-            <div class="split <%if(left[i].type=='a'){%>bg-blue<%}%>"></div>
-            <%}%>
+            <% for(var i = 0;i < left.length;i++){ %>
+            <div class="box <% if(left[i].type == 'c' || left[i].type == 'd' ){ %>bg-blue<% } %>">
+                <pre class='line-no' style='flex-shrink:0'><%= i+1 %></pre>
+                <pre style='flex-grow:1'><%= left[i].content %></pre>
+            </div>
+            <div class="split <% if(left[i].type == 'a'){ %>bg-blue<% } %>"></div>
+            <% } %>
         </div>
     </div>
     <div class='canvas-inner'>
-        <canvas id="canvas" width="80" height="<%= (right.length > left.length ? right.length : left.length) * 25%>"
-                style="width:80px;height:<%= (right.length > left.length ? right.length : left.length) * 25%>px;background: white"></canvas>
+        <canvas id="canvas" width="80" height="<%= (right.length > left.length ? right.length : left.length) * 25 %>"
+                style="width:80px;height:<%= (right.length > left.length ? right.length : left.length) * 25 %>px;background: white"></canvas>
     </div>
     <div class='layout'>
+        <div style="border-bottom: 1px solid #eee; background:#CFFF9E;">
+            <pre>文件2 > <%=statistics.right%></pre>
+        </div>
         <div>
-            <% for(var i=0;i<right.length;i++){ %>
-            <pre class="<%if(right[i].type=='c' || right[i].type=='a'){%>bg-blue<%}%>"><%=right[i].content%></pre>
-            <div class="split <%if(right[i].type=='d'){%>bg-blue<%}%>"></div>
-            <%}%>
+            <% for(var i = 0;i < right.length;i++){ %>
+            <pre class="<% if(right[i].type == 'c' || right[i].type == 'a'){ %>bg-blue<% } %>"><%= right[i].content %></pre>
+            <div class="split <% if(right[i].type == 'd'){ %>bg-blue<% } %>"></div>
+            <% } %>
         </div>
     </div>
 </div>
 <script>
-    var canvas=document.getElementById("canvas");
-    var context=canvas.getContext("2d");
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
     //context.lineWidth = 1;
     //lineTo(context, 6, 4);
     //lineTo(context, 6, 7);
 
-    var groups = <%-groups%>;
+    var groups = <%- groups %>;
 
-    for(var i=0;i<groups.length;i++){
+    for (var i = 0; i < groups.length; i++) {
         var group = groups[i];
-        draw(context, 'rgba(240,240,240,0.7)', group.p1,group.p2,group.p3,group.p4);
+        var color = '#BBDCFF'; // 'rgba(240,240,240,0.7)'
+        draw(context, color, group.p1, group.p2, group.p3, group.p4);
     }
 
-    
-    function draw(ctx, color, line1, line2, line3, line4){
+
+    function draw(ctx, color, line1, line2, line3, line4) {
         var width = 80;
         var x1 = 0, y1 = (line1) * 25;
         var x2 = width, y2 = (line2) * 25;
         var x3 = width, y3 = line3 * 25;
- 
+
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.lineTo(x3, y3);
 
-        if(line4){
+        if (line4) {
             ctx.lineTo(0, line4 * 25);
         }
 
@@ -116,9 +137,8 @@
         ctx['fill']();
     }
 
-    
 
-    function lineTo(context, left, righit){
+    function lineTo(context, left, righit) {
         var fromY = left * 25;
         var toY = righit * 25;
 

@@ -41,8 +41,6 @@ module.exports = function (router) {
         let rightRows = fs.readFileSync(file2).toString().split('\n');
 
 
-
-
         let r = await tools.diff(`diff ${file1} ${file2}`);
 
         let diffs = r.split('\n');
@@ -52,7 +50,12 @@ module.exports = function (router) {
         leftRows = adapter(leftRows, diffrows.leftRows);
         rightRows = adapter(rightRows, diffrows.rightRows);
 
-        await ctx.render('compare', {left: leftRows, right: rightRows, groups: JSON.stringify(diffrows.relations)});
+        let statistics = {
+            left:`相对变化${diffrows.leftRows.length}行`,
+            right:`相对变化${diffrows.rightRows.length}行`
+        };
+
+        await ctx.render('compare', {left: leftRows, right: rightRows, groups: JSON.stringify(diffrows.relations), statistics:statistics});
     });
 
     router.get('/c', async (ctx) => {
