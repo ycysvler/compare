@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const tools = require('../../utils/tools');
 const uploadFile = require('../../utils/upload');
+const jschardet = require("jschardet");
+const encoding = require('encoding');
 
 module.exports = function (router) {
 
@@ -42,6 +44,8 @@ module.exports = function (router) {
 
 
         let r = await tools.diff(`diff ${file1} ${file2}`);
+
+        console.log('r',r);
 
         let diffs = r.split('\n');
 
@@ -102,6 +106,7 @@ module.exports = function (router) {
                 group.rows.push(row);
             } else if (row) {
                 // new group
+                if(row.indexOf(',') === -1) continue;
                 group = {rows: [], head: splitLeftRight(row)};
                 groups.push(group);
             }
@@ -190,6 +195,7 @@ module.exports = function (router) {
             result.type = 'd';
         }
 
+        console.log(head);
         // 获取分组的开始时间，结束时间
         result.leftBegin = getBeginRow(temps[0]).begin;
         result.leftEnd = getBeginRow(temps[0]).end;

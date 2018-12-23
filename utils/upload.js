@@ -2,6 +2,8 @@ const inspect = require('util').inspect;
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const jschardet = require("jschardet");
+const encoding = require('encoding');
 const Busboy = require('busboy');
 
 /**
@@ -61,13 +63,14 @@ function uploadFile(ctx, options) {
             let _uploadFilePath = path.join(filePath, fileName);
             let saveTo = path.join(_uploadFilePath);
 
-            // 文件保存到制定路径
-            file.pipe(fs.createWriteStream(saveTo));
+            //file = encoding.convert(file,'utf8','gbk');
 
+            let stream = fs.createWriteStream(saveTo, {encoding:'utf8'});
 
             //监听data事件，接收传过来的文件，如果文件过大，此事件将会执行多次，此方法必须写在file方法里
             file.on('data', function (data) {
-                console.log('data', data);
+                //console.log('data', data);
+
             });
 
             // 文件写入事件结束
@@ -78,10 +81,11 @@ function uploadFile(ctx, options) {
                 //result.path = _uploadFilePath;
                 result.files.push(_uploadFilePath);
 
-                console.log('????', fs.readFileSync(_uploadFilePath).toString());
-
                 console.log('文件上传成功！');
             });
+
+            // 文件保存到制定路径
+            file.pipe(stream);
 
         });
 
@@ -94,8 +98,19 @@ function uploadFile(ctx, options) {
         // 解析结束事件
         busboy.on('finish', function () {
             console.log('文件上结束');
-            //resolve(result);
-            setTimeout(()=>{resolve(result);}, 10);
+
+            setTimeout(()=>{
+                for(let file of result.files){
+                    var buff = fs.readFileSync(file);
+                    var info = jschardet.detect(buff);
+
+                    if (info.encoding == "GB2312" || info.encoding == "ascii") {
+                        let resultBuffer = encoding.convert(buff, "UTF-8", info.encoding);
+                        fs.writeFileSync(file, resultBuffer, "utf8");
+                    }
+                }
+
+                resolve(result);}, 10);
 
         });
 

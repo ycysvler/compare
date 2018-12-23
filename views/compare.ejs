@@ -104,15 +104,14 @@
 <script>
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
-    //context.lineWidth = 1;
-    //lineTo(context, 6, 4);
-    //lineTo(context, 6, 7);
+
 
     var groups = <%- groups %>;
 
+
     for (var i = 0; i < groups.length; i++) {
         var group = groups[i];
-        var color = '#BBDCFF'; // 'rgba(240,240,240,0.7)'
+        var color = '#BBDCFF';
         draw(context, color, group.p1, group.p2, group.p3, group.p4);
     }
 
