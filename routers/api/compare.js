@@ -98,7 +98,8 @@ module.exports = function (router) {
         let groups = [], group = {};
         let result = {leftRows: [], rightRows: [], relations: []};
         for (let row of rows) {
-            console.log('row', row);
+            if(row === '\\ 文件尾没有 newline 字符')
+                continue;
             if (row[0] === '<' || row[0] === '>' || row[0] === '-') {
                 group.rows.push(row);
             } else if (row) {
