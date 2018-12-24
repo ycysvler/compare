@@ -1,0 +1,75 @@
+team开发密码：
+
+mz2hAg
+
+
+专利服务器：114.247.108.199
+administrator
+Bjzx@2017
+
+阿里云登陆账号：hi35003007@aliyun.com
+阿里云登陆密码：plasma758299
+阿里云邮箱管理员密码：PLASMAplasma758299
+
+zhangqipeng@seeobject.com 密码：ZHANGQIPENGzhangqipeng123
+
+mail.seeobject.com  liuzhonghua@seeobject.com
+password  PLASMAplasma75829999 改为plasma758299L （20180920改过）
+
+海康网络相机登陆：
+m_csUserName="admin";
+	m_csPassword="12345qwer";
+	m_nLoginPort=8000;
+
+京ICP备17038939号
+ 京公网安备11010802024040号 
+char szStr[256] = { 0 };
+
+	m_ctrlDeviceIP.GetAddress(dwDeviceIP);
+	csTemp = IPToStr(dwDeviceIP);
+	
+	//sprintf(DeviceIP, "%s", (LPSTR)(LPCTSTR)csTemp);// csTemp.GetBuffer(0));
+	wcstombs(szStr, csTemp, csTemp.GetLength());//Unicode转换为ASCII
+	const char * m_csIPchar = szStr;
+	strncpy(DeviceIP, m_csIPchar, MAX_NAMELEN);
+
+pzrlhwmeyapmbfee
+
+gotqgkyqsgvybaja
+
+
+http://104.156.238.204/
+
+
+中国就有这么一群奇怪的人，本身是最底阶层，利益每天都在被损害，却具有统治阶级的意识，在动物世界里找这么弱智的东西都几乎不可能。——林语堂
+
+wykobi 视觉几何库
+
+
+建行网上银行登录出现问题的话，到网页下载中心下载U盾组件进行更新。
+U盾密码：758299
+公司账号支付流程：
+
+1、先用操作员制单付款，用操作员的U盾进行登录。
+2、制单后主管审核并付款。
+
+
+客户识别码：BJP064945257#001
+
+主管
+
+操作员代码：999999
+密码：999999
+
+操作员：曹迪
+操作员代码：781120
+默认密码：123456（交易密码）
+
+操作员：鞠丽
+操作员代码：520627
+默认密码：123456
+
+
+github：
+liuzhonghuacd
+plasma758299

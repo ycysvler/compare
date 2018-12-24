@@ -99,7 +99,7 @@ module.exports = function (router) {
     }
 
     function getLeftRightDiffRows(rows) {
-        let groups = [], group = {};
+        let groups = [], group = {rows:[]};
         let result = {leftRows: [], rightRows: [], relations: []};
         for (let row of rows) {
             if (row[0] === '<' || row[0] === '>' || row[0] === '-') {
