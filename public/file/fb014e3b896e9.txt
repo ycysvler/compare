@@ -1,2 +1,0 @@
-﻿1、下载地址https://github.com/eric612/MobileNet-SSD-windows
-2、执行train_net.cmd，修改了train_voc.prototxt 中的batch_size: 16 改为8，原来的16出现out of memory

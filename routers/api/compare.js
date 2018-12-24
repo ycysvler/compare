@@ -25,7 +25,7 @@ module.exports = function (router) {
         console.log('file1', f.files[0]);
         console.log('file2', f.files[1]);
 
-        console.log(f);
+
 
         let file1 = path.join(__dirname, "../../data/v001.txt");
         let file2 = path.join(__dirname, "../../data/v002.txt");
@@ -33,11 +33,6 @@ module.exports = function (router) {
         file1 = f.files[0];
         file2 = f.files[1];
 
-        fs.exists(file1, (exists)=>{
-            console.log('exists', exists);
-        });
-
-        console.log('leftRows',  fs.readFileSync(file1));
 
         let leftRows = fs.readFileSync(file1).toString().split('\n');
         let rightRows = fs.readFileSync(file2).toString().split('\n');
@@ -45,7 +40,7 @@ module.exports = function (router) {
 
         let r = await tools.diff(`diff ${file1} ${file2}`);
 
-        console.log('r',r);
+        console.log(r);
 
         let diffs = r.split('\n');
 
@@ -59,6 +54,7 @@ module.exports = function (router) {
             right:`相对变化${diffrows.rightRows.length}行`
         };
 
+        console.log( diffrows.leftRows);
         await ctx.render('compare', {left: leftRows, right: rightRows, groups: JSON.stringify(diffrows.relations), statistics:statistics});
     });
 
@@ -99,14 +95,14 @@ module.exports = function (router) {
     }
 
     function getLeftRightDiffRows(rows) {
-        let groups = [], group = {rows:[]};
+        let groups = [], group = {};
         let result = {leftRows: [], rightRows: [], relations: []};
         for (let row of rows) {
+            console.log('row', row);
             if (row[0] === '<' || row[0] === '>' || row[0] === '-') {
                 group.rows.push(row);
             } else if (row) {
                 // new group
-                if(row.indexOf(',') === -1) continue;
                 group = {rows: [], head: splitLeftRight(row)};
                 groups.push(group);
             }
@@ -125,8 +121,6 @@ module.exports = function (router) {
     // 获取左右行
     function getLeftRightRelation(group) {
         let leftRows = [], rightRows = [], relations = [];
-
-        console.log('for relation', group.head);
 
         // 映射关系
         let relation = {
@@ -150,9 +144,6 @@ module.exports = function (router) {
             relation.p2--;
         }
 
-        console.log('relation', relation);
-        console.log('---------------------');
-
         for (let row of group.rows) {
             if (row[0] === '<') {
                 leftRows.push({row: group.head.leftBegin, content: row, type: group.head.type});
@@ -175,7 +166,8 @@ module.exports = function (router) {
 
         relations.push(relation);
 
-        return {"leftRows": leftRows, "rightRows": rightRows, "relations": relations};
+        let data= {"leftRows": leftRows, "rightRows": rightRows, "relations": relations};
+        return data;
     }
 
     // 获取左右列开始行
@@ -208,6 +200,7 @@ module.exports = function (router) {
     // 提取起始行数字
     function getBeginRow(str) {
         let temps = str.split(',');
+        console.log('temps', temps);
         let begin, end;
         begin = parseInt(temps[0]);
         end = temps.length > 1 ? parseInt(temps[1]) : parseInt(temps[0]);

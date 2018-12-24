@@ -49,7 +49,7 @@ function uploadFile(ctx, options) {
     let mkdirResult = mkdirsSync(filePath);
 
     return new Promise((resolve, reject) => {
-        console.log('文件上传中...');
+        //console.log('文件上传中...');
 
         let result = {
             files:[],
@@ -81,7 +81,7 @@ function uploadFile(ctx, options) {
                 //result.path = _uploadFilePath;
                 result.files.push(_uploadFilePath);
 
-                console.log('文件上传成功！');
+                //console.log('文件上传成功！');
             });
 
             // 文件保存到制定路径
